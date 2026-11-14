@@ -1,3 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AS FINANCE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f1f4fa;color:#17233d}
+header{background:#102b55;color:white;text-align:center;padding:25px 12px}
+header h1{margin:0;font-size:30px}
+header p{margin:8px 0 0}
+.container{max-width:600px;margin:20px auto;padding:15px}
+.card{background:white;padding:22px;border-radius:15px;box-shadow:0 3px 15px #0001}
+h2{color:#15396c;text-align:center}
+.loan{background:#eaf1ff;padding:12px;margin:8px 0;border-radius:9px;text-align:center;font-weight:bold}
+label{display:block;margin-top:14px;font-weight:bold}
+input,select,textarea{width:100%;padding:13px;margin-top:7px;border:1px solid #ccd3df;border-radius:8px;font-size:16px}
+button{border:0;padding:14px;border-radius:9px;background:#174b91;color:white;font-size:16px;font-weight:bold;width:100%;margin-top:18px}
+.whatsapp{display:block;text-align:center;background:#168b50;color:white;padding:14px;border-radius:9px;text-decoration:none;margin-top:12px}
+.small{text-align:center;color:#667;margin-top:18px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
 <h1>AS FINANCE</h1>
-<p>Business Loan | Personal Loan | Home Loan | Car Loan</p>
-<p>Contact: 8109422005</p>
+<p>आपका भरोसेमंद फाइनेंस पार्टनर</p>
+<p>Your Trusted Finance Partner</p>
+</header>
+
+<div class="container">
+<div class="card">
+<h2 id="heading">Loan Application Form</h2>
+
+<div class="loan">Business Loan</div>
+<div class="loan">Personal Loan</div>
+<div class="loan">Home Loan</div>
+<div class="loan">Car Loan</div>
+
+<form id="loanForm">
+<label id="nameLabel">पूरा नाम / Full Name</label>
+<input id="name" required placeholder="अपना नाम लिखें">
+
+<label id="phoneLabel">मोबाइल नंबर / Mobile Number</label>
+<input id="phone" type="tel" pattern="[0-9]{10}" maxlength="10" required placeholder="10 अंकों का नंबर">
+
+<label id="loanLabel">लोन का प्रकार / Loan Type</label>
+<select id="loanType" required>
+<option value="">Select Loan</option>
+<option>Business Loan</option>
+<option>Personal Loan</option>
+<option>Home Loan</option>
+<option>Car Loan</option>
+</select>
+
+<label id="amountLabel">लोन राशि / Loan Amount</label>
+<input id="amount" type="number" min="1" required placeholder="जैसे 500000">
+
+<label id="cityLabel">शहर / City</label>
+<input id="city" required placeholder="अपना शहर लिखें">
+
+<label id="messageLabel">अन्य जानकारी / Message</label>
+<textarea id="message" placeholder="Optional"></textarea>
+
+<button id="submitBtn" type="submit">Submit Application</button>
+</form>
+
+<p id="status" style="text-align:center"></p>
+
+<a class="whatsapp" href="https://wa.me/918109422005">
+WhatsApp: 8109422005
+</a>
+<a class="whatsapp" href="tel:8109422005">
+Call: 8109422005
+</a>
+<p class="small">AS FINANCE | Loan Assistance</p>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+
+import { getFirestore, collection, addDoc, serverTimestamp }
+from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBAMFOu6RQDjS6Be71jOktG5x_vvqKQZuQ",
+  authDomain: "as-finance-ae184.firebaseapp.com",
+  projectId: "as-finance-ae184",
+  storageBucket: "as-finance-ae184.firebasestorage.app",
+  messagingSenderId: "428474291161",
+  appId: "1:428474291161:web:295c86c75883776c623fc8",
+  measurementId: "G-HTE1Y0YHCT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("loanForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const btn = document.getElementById("submitBtn");
+  const status = document.getElementById("status");
+  btn.disabled = true;
+  status.textContent = "Submitting...";
+
+  try {
+    await addDoc(collection(db, "loanApplications"), {
+      name: document.getElementById("name").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      loanType: document.getElementById("loanType").value,
+      amount: Number(document.getElementById("amount").value),
+      city: document.getElementById("city").value.trim(),
+      message: document.getElementById("message").value.trim(),
+      createdAt: serverTimestamp()
+    });
+
+    status.textContent = "Application submitted successfully!";
+    document.getElementById("loanForm").reset();
+  } catch (error) {
+    console.error(error);
+    status.textContent = "Application submit nahi hui. Please try again.";
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
+
